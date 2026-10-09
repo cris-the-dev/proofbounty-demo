@@ -33,7 +33,11 @@ def test_slugify_keeps_digits():
     assert slugify("Version 2.0 Release") == "version-2-0-release"
 
 
-def test_slugify_treats_non_ascii_letters_as_separators():
-    # Only a-z and 0-9 are kept; accented letters count as "not a-z" and become a hyphen.
-    assert slugify("Café Déjà") == "caf-d-j"
-    assert slugify("Ünïcode") == "n-code"
+def test_slugify_folds_accented_letters():
+    assert slugify("Café Déjà Vu") == "cafe-deja-vu"
+    assert slugify("Ünïcode Ñandú") == "unicode-nandu"
+
+
+def test_slugify_drops_letters_without_ascii_base():
+    # Letters with no a-z base (e.g. Greek) act as separators.
+    assert slugify("alpha Ωmega") == "alpha-mega"
